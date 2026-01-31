@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>FoodSite</title>
+    <!-- Bootstrap CDN (Feature 4) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-4">
+
+    <!-- Header -->
+    <h1 class="text-center mb-4">🍽️ FoodSite</h1>
+
+    <!-- Search Bar (Feature 3) -->
+    <form method="GET" class="mb-4">
+        <input type="text" name="q" class="form-control" placeholder="Search for food...">
+    </form>
+
+    <!-- Veg / Non-Veg Filter (Your Idea) -->
+    <div class="mb-4">
+        <a href="?type=veg" class="btn btn-success btn-sm">Veg 🥦</a>
+        <a href="?type=nonveg" class="btn btn-danger btn-sm">Non-Veg 🍗</a>
+        <a href="/" class="btn btn-secondary btn-sm">All</a>
+    </div>
+
+    <!-- Categories (Feature 1) -->
+    {% for category in categories %}
+        <h2 class="mt-4">{{ category.name }}</h2>
+        <div class="row">
+
+        {% for food in foods %}
+            {% if food.category == category %}
+
+            <div class="col-md-4">
+                <div class="card mb-4 shadow-sm">
+
+                    <!-- Daily Special Badge (Your Idea) -->
+                    {% if food.is_special %}
+                        <span class="badge bg-warning text-dark position-absolute m-2">
+                            ⭐ Today’s Special
+                        </span>
+                    {% endif %}
+
+                    <img src="{{ food.image.url }}" class="card-img-top" alt="{{ food.name }}">
+
+                    <div class="card-body">
+                        <h5 class="card-title">{{ food.name }}</h5>
+                        <p class="card-text">{{ food.description|truncatechars:80 }}</p>
+
+                        <!-- Food Rating (Your Idea) -->
+                        <p>
+                            ⭐ {{ food.rating }}/5
+                        </p>
+
+                        <p class="fw-bold">${{ food.price }}</p>
+
+                        <!-- Actions -->
+                        <div class="d-flex justify-content-between">
+                            <!-- Food Detail Page (Feature 2) -->
+                            <a href="{% url 'food_detail' food.id %}" class="btn btn-outline-primary btn-sm">
+                                View
+                            </a>
+
+                            <!-- Add to Cart (Feature 5) -->
+                            <a href="{% url 'add_to_cart' food.id %}" class="btn btn-success btn-sm">
+                                Add to Cart
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            {% endif %}
+        {% endfor %}
+
+        </div>
+    {% endfor %}
+
+    <!-- Order & Checkout Entry (Features 6, 10, 11) -->
+    <div class="text-center mt-5">
+        <a href="{% url 'cart' %}" class="btn btn-lg btn-primary">
+            🛒 View Cart & Checkout
+        </a>
+    </div>
+
+    <!-- Authentication Awareness (Feature 7) -->
+    <div class="text-center mt-3">
+        {% if user.is_authenticated %}
+            <p>Welcome, {{ user.username }} 👋</p>
+        {% else %}
+            <a href="{% url 'login' %}">Login</a> |
+            <a href="{% url 'signup' %}">Signup</a>
+
+        {% endif %}
+    </div>
+
+</div>
+
+</body>
+</html>
+
